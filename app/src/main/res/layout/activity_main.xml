@@ -253,6 +253,44 @@
 
                  </LinearLayout>
             </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TableLayout
+                    android:layout_width=""
+                    android:layout_height="">
+
+                </TableLayout>
+                <LinearLayout
+                    android:layout_width=""
+                    android:layout_height="">
+
+                </LinearLayout>
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/tvInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/amaranth_regular"
+                android:text="@string/instructions"
+                android:textColor="@color/app_color_regular"
+                android:textSize="14sp">
+            </TextView>
+
+            <TextView
+                android:id="@+id/tvCredits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/amaranth_regular"
+                android:text="@string/credits"
+                android:textAlignment="center"
+                android:textColor="@color/app_color_regular"
+                android:textSize="12sp">
+
+            </TextView>
+
         </LinearLayout>
     </ScrollView>
 
