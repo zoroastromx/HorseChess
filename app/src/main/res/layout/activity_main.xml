@@ -839,8 +839,8 @@
                             android:layout_height="43dp"
                             android:background="@color/black_cell"/>
                         <ImageView
-                            android:id="@+id/c52"
-                            android:tag="c52"
+                            android:id="@+id/c50"
+                            android:tag="c50"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -848,8 +848,8 @@
                             android:layout_height="43dp"
                             android:background="@color/white_cell"/>
                         <ImageView
-                            android:id="@+id/c62"
-                            android:tag="c62"
+                            android:id="@+id/c60"
+                            android:tag="c60"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -857,8 +857,8 @@
                             android:layout_height="43dp"
                             android:background="@color/black_cell"/>
                         <ImageView
-                            android:id="@+id/c72"
-                            android:tag="c72"
+                            android:id="@+id/c70"
+                            android:tag="c70"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
