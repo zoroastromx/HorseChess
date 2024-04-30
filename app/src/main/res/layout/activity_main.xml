@@ -274,7 +274,7 @@
                             android:layout_weight="1"
                             android:layout_height="43dp"
                             android:background="@color/white_cell"
-                            android:src=""/>
+                            android:src="@drawable/horse"/>
                         <ImageView
                             android:id="@+id/c17"
                             android:tag="c17"
@@ -283,9 +283,64 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="43dp"
-                            android:background="@color/black_cell"
-                            android:src=""/>
+                            android:background="@color/black_cell"/>
+                        <ImageView
+                            android:id="@+id/c27"
+                            android:tag="c17"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/white_cell"/>
+                        <ImageView
+                            android:id="@+id/c37"
+                            android:tag="c17"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/black_cell"/>
+                        <ImageView
+                            android:id="@+id/c47"
+                            android:tag="c17"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/white_cell"/>
+                        <ImageView
+                            android:id="@+id/c57"
+                            android:tag="c17"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/black_cell"/>
+                        <ImageView
+                            android:id="@+id/c67"
+                            android:tag="c17"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/white_cell"/>
+                        <ImageView
+                            android:id="@+id/c77"
+                            android:tag="c17"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/black_cell"/>
                     </TableRow>
+
+
 
                 </TableLayout>
            <!--     <LinearLayout
