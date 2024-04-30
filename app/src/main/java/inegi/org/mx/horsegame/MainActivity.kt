@@ -1,5 +1,6 @@
 package inegi.org.mx.horsegame
 
+import android.graphics.Point
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -53,5 +54,4 @@ class MainActivity : AppCompatActivity() {
             lyMessage.visibility = View.INVISIBLE
         }
 
-    }
 }
