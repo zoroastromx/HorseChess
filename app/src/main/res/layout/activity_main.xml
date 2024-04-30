@@ -286,7 +286,7 @@
                             android:background="@color/black_cell"/>
                         <ImageView
                             android:id="@+id/c27"
-                            android:tag="c17"
+                            android:tag="c27"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -295,7 +295,7 @@
                             android:background="@color/white_cell"/>
                         <ImageView
                             android:id="@+id/c37"
-                            android:tag="c17"
+                            android:tag="c37"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -304,7 +304,7 @@
                             android:background="@color/black_cell"/>
                         <ImageView
                             android:id="@+id/c47"
-                            android:tag="c17"
+                            android:tag="c47"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -313,7 +313,7 @@
                             android:background="@color/white_cell"/>
                         <ImageView
                             android:id="@+id/c57"
-                            android:tag="c17"
+                            android:tag="c57"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -322,7 +322,7 @@
                             android:background="@color/black_cell"/>
                         <ImageView
                             android:id="@+id/c67"
-                            android:tag="c17"
+                            android:tag="c67"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -331,7 +331,7 @@
                             android:background="@color/white_cell"/>
                         <ImageView
                             android:id="@+id/c77"
-                            android:tag="c17"
+                            android:tag="c77"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
@@ -339,6 +339,83 @@
                             android:layout_height="43dp"
                             android:background="@color/black_cell"/>
                     </TableRow>
+
+                    <TableRow
+                        android:weightSum="8">
+                        <ImageView
+                            android:id="@+id/c06"
+                            android:tag="c06"
+                            android:layout_column="0"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/black_cell"/>
+                       <ImageView
+                            android:id="@+id/c16"
+                            android:tag="c16"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/white_cell"/>
+                        <ImageView
+                            android:id="@+id/c26"
+                            android:tag="c26"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/black_cell"/>
+                        <ImageView
+                            android:id="@+id/c36"
+                            android:tag="c36"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/white_cell"/>
+                        <ImageView
+                            android:id="@+id/c46"
+                            android:tag="c46"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/black_cell"/>
+                        <ImageView
+                            android:id="@+id/c56"
+                            android:tag="c56"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/white_cell"/>
+                        <ImageView
+                            android:id="@+id/c66"
+                            android:tag="c66"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/black_cell"/>
+                        <ImageView
+                            android:id="@+id/c76"
+                            android:tag="c76"
+                            android:layout_column="1"
+                            android:onClick="checkCell"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="43dp"
+                            android:background="@color/white_cell"/>
+                    </TableRow>
+
 
 
 
