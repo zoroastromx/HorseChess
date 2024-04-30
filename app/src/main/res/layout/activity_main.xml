@@ -925,6 +925,7 @@
                       android:layout_marginBottom="40dp"
                       android:background="@drawable/bg_title_bottom"
                       android:visibility="visible"
+                      android:src="@drawable/ic_share"
 
                       />
 
