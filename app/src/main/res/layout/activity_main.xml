@@ -90,9 +90,10 @@
                 android:layout_marginStart="18dp"
                 android:layout_marginEnd="18dp"
                 android:orientation="horizontal"
-                android:weightSum="4">
+                android:weightSum="4"
+                 android:baselineAligned="false">
                  <LinearLayout
-                     android:layout_width="match_parent"
+                     android:layout_width="0dp"
                      android:layout_height="wrap_content"
                      android:layout_marginStart="2dp"
                      android:layout_marginEnd="2dp"
@@ -104,9 +105,7 @@
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
                          android:layout_marginTop="12dp"
-
                          android:background="@drawable/bg_data_top"
-
                          android:fontFamily="@font/amaranth_regular"
                          android:paddingTop="10dp"
                          android:paddingBottom="10dp"
