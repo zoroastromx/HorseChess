@@ -34,20 +34,31 @@ class MainActivity : AppCompatActivity() {
            display.getSize(size)
            val width = size.x
 
-           var width_dp = (width / getResources().getDisplayMetrics().density)
+           val width_dp = (width / getResources().getDisplayMetrics().density)
 
-           var lateralMarginsDP = 0
-           val widthcell = (width_dp - lateralMarginsDP) / 8
-           val heigthcell = widthcell
+           val lateralMarginsDP = 0
+           val cellSize = (width_dp - lateralMarginsDP) / 8
+           val heigthcell = cellSize
 
-           for (i in 0..7)
+            for ((i, row) in (0..7).withIndex()) {
+                for ((j, _) in (0..7).withIndex()) {
+                    iv = findViewById(resources.getIdentifier("c$i$j", "id", packageName))
+                    //
+                    val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,heigthcell,getResources().getDisplayMetrics()).toInt()
+                    val width  = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,cellSize,getResources().getDisplayMetrics()).toInt()
+                    iv.setLayoutParams(TableRow.LayoutParams(width, height))
+
+
+                }
+            }
+          /* for (i in 0..7)
                for (j in 0..7){
                    iv = findViewById(resources.getIdentifier("c$i$j", "id", packageName))
-
-                   var height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,heigthcell,getResources().getDisplayMetrics()).toInt()
-                   var width  = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,widthcell,getResources().getDisplayMetrics()).toInt()
-                   iv.setLayoutParams(TableRow.LayoutParams(width, height))
-               }
+                   //iv = findViewById(R.id."c$i$j")
+                   val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,heigthcell,getResources().getDisplayMetrics()).toInt()
+                   val width  = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,cellSize,getResources().getDisplayMetrics()).toInt()
+                   iv.setLayoutParams(TableRow.LayoutParams(width, height))*/
+               //}
         }
         private fun hideMessage(){
             val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
