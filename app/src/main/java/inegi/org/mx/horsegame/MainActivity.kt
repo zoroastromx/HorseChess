@@ -8,18 +8,42 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TableRow
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       // enableEdgeToEdge()
+        // enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-       // ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rlScreen)) { v, insets ->
-      //      val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-       //     v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-       //     insets
+        // ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rlScreen)) { v, insets ->
+        //      val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        //     v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+        //     insets
 
-            initScreenGame()
+        initScreenGame()
+        setFirstPosition() // para pintar de forma aleatoria la primera celda
+    }
+     private fun setFirstPosition(){
+            var x = 0
+            var y = 0
+            x = (0..7).random()
+            y = (0..7).random()
+
+            selectCell(x,y)
+        }
+    private fun selectCell(x: Int, y: Int){
+                paintHorseCell(x,y, "selected_cell")
+            }
+
+
+        private fun paintHorseCell(x: Int, y: Int, color: String){
+            //val iv = findViewById<ImageView>(resources.getIdentifier("c$x$y", "id", packageName))
+            val iv : ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
+            //iv.setTag(tag)
+            iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(color, "color", packageName)))
+            iv.setImageResource(R.drawable.horse)
+
+
         }
 
         private fun initScreenGame(){
