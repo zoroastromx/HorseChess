@@ -7,12 +7,17 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TableRow
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     private var cellselectedX = 0
     private var cellselectedY = 0
+    private var nameColorBlack = "black_cell"
+    private var nameColorWhite = "white_cell"
+
+    private var options = 0
 
     // hay que hacer una matriz del tablero para llevar el control de las celdas
 
@@ -57,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     // valor 2 es un bonus
     // valor 9 es una opción del movimiento actualk
     private fun resetBoard(){
-        board = Array(8) { Array(8) { 0 } }
+        board = Array(8) { Array(8) { 0 } } // esto fue una sugerencia de android studio
     }
     // para que el movimiento del caballo sea de forma correcta
     private fun checkCell(x: Int, y: Int){
@@ -93,15 +98,100 @@ class MainActivity : AppCompatActivity() {
             selectCell(x,y)
 
         }
+    private fun clearOption(x: Int, y: Int){
+        val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
+        if (checkColorCell(x,y) == "black"){
+            iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(nameColorBlack, "color", packageName)))
+        }else{
+            iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(nameColorWhite, "color", packageName)))
+        }
+        if (board[x][y] == 1) iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier("previous cell", "color", packageName)))
+    }
+    private fun clearOptions(){
+        for (i in 0..7)
+            for (j in 0..7){
+                if ((board[i][j] == 9) || board[i][j] == 2){
+                    if (board[i][j] == 9) board[i][j] = 0
+                    clearOption(i,j)
+
+                }
+            }
+    }
     private fun selectCell(x: Int, y: Int){
               // hay que pintar el anterior de naranja
         board[x][y] = 1
         paintHorseCell(cellselectedX,cellselectedY, "previous_cell")
         cellselectedX = x
         cellselectedY = y
+
+        clearOptions()
+
+
         paintHorseCell(x,y, "selected_cell")
+
+        checkOptions(x,y)
+
         }
 
+        private fun checkOptions(x: Int, y: Int){
+            options = 0
+
+            checkMove(x,y,1,2)
+            checkMove(x,y,2,1)
+            checkMove(x,y,1,-2)
+            checkMove(x,y,2,-1)
+            checkMove(x,y,-1,2)
+            checkMove(x,y,-2,1)
+            checkMove(x,y,-1,-2)
+            checkMove(x,y,-2,-1)
+
+            val tvOptionsData = findViewById<TextView>(R.id.tvOptionsData)
+            tvOptionsData.text = options.toString()
+
+
+        }
+        // dar al usuario las opciones de movimiento, sugerencias pues
+        private fun checkMove(x: Int, y: Int, movX: Int, movY: Int){
+            var optionX = x + movX
+            var optionY = y + movY
+
+            if (optionX < 8 && optionY < 8 && optionX >= 0 && optionY >= 0){
+                if (board[optionX][optionY] == 0
+                    || board[optionX][optionY] == 2){
+                    //paintHorseCell(optionX,optionY, "option_cell") lo que me dice la IA
+                    options++
+                    paintOptions(optionX, optionY)
+                    board[optionX][optionY] = 9
+                }
+            }
+        }
+        private fun checkColorCell(x: Int, y: Int): String{
+            var color = ""
+            val blackColumnX = arrayOf(0,2,4,6)
+            val blackRowX = arrayOf(1,3,5,7)
+            color = if ((blackColumnX.contains(x) && blackColumnX.contains(y))
+                || (blackRowX.contains(x) && blackRowX.contains(y))){
+                "black"
+            }else{
+                "white"
+            }
+
+            return color
+        }
+
+        private fun paintOptions(x: Int, y: Int){
+            val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
+           // iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(color, "color", packageName)))
+            // si la casilla es blanca se le pone un fondo y si es negra otro fondo
+            if (checkColorCell(x,y) == "black"){
+                iv.setBackgroundResource(R.drawable.option_black)
+                //iv.setImageResource(R.drawable.horse) // IA
+            }else{
+                iv.setBackgroundResource(R.drawable.option_white)
+               // iv.setImageResource(R.drawable.horse) // IA
+            }
+
+        }
 
         private fun paintHorseCell(x: Int, y: Int, color: String){
             //val iv = findViewById<ImageView>(resources.getIdentifier("c$x$y", "id", packageName))
