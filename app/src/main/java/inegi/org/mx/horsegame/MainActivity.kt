@@ -12,16 +12,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
+
+
+    private var widthBonus = 0
+
     private var cellselectedX = 0
     private var cellselectedY = 0
     private var nameColorBlack = "black_cell"
     private var nameColorWhite = "white_cell"
+
+    private var levelMoves = 64 // para saber cuantos movimientos tiene cada nivel
 
     //control de movimientos
     private var movesRequired = 4
     private var moves = 64
 
     private var options = 0
+
+    // para llevar un control de los bonus conseguidos
+    private var bonus = 0
 
     // hay que hacer una matriz del tablero para llevar el control de las celdas
 
@@ -142,10 +151,39 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
+
+    private fun growProgressBonus(){
+
+        val movesDone = levelMoves - moves
+        val bonusDone = movesDone / movesRequired
+        val movesRest = movesRequired * (bonusDone)
+        val bonusGrow = movesDone -  movesRest
+
+        val v = findViewById<View>(R.id.vNewBonus)
+        val widthBonus = ((widthBonus/movesRequired) * bonusGrow).toFloat()
+        // pintar la barrita de progreso roja
+        val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, getResources().getDisplayMetrics()).toInt()
+        val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,widthBonus, getResources().getDisplayMetrics()).toInt()
+        //val v = findViewById<View>(R.id.vNewBonus)
+        v.setLayoutParams(TableRow.LayoutParams(width, height))
+
+    }
+
     private fun selectCell(x: Int, y: Int){
         moves--
         val tvMovesData = findViewById<TextView>(R.id.tvMovesData)
         tvMovesData.text = moves.toString()
+
+        growProgressBonus()
+
+        if (board[x][y] == 2){
+            bonus++
+            // sugerido por la IA
+
+            val tvBonusData = findViewById<TextView>(R.id.tvBonusData)
+            tvBonusData.text = "+ $bonus" // para poner el bonus en la pantalla
+        }
+
         // sugerido por la IA
         if (moves == 0){
             val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
@@ -193,8 +231,8 @@ class MainActivity : AppCompatActivity() {
         }
         // dar al usuario las opciones de movimiento, sugerencias pues
         private fun checkMove(x: Int, y: Int, movX: Int, movY: Int){
-            var optionX = x + movX
-            var optionY = y + movY
+            val optionX = x + movX
+            val optionY = y + movY
 
             if (optionX < 8 && optionY < 8 && optionX >= 0 && optionY >= 0){
                 if (board[optionX][optionY] == 0
@@ -202,7 +240,10 @@ class MainActivity : AppCompatActivity() {
                     //paintHorseCell(optionX,optionY, "option_cell") lo que me dice la IA
                     options++
                     paintOptions(optionX, optionY)
-                    board[optionX][optionY] = 9
+
+                    if (board[optionX][optionY] == 0) {
+                        board[optionX][optionY] = 9
+                    }
                 }
             }
         }
@@ -261,6 +302,8 @@ class MainActivity : AppCompatActivity() {
            val lateralMarginsDP = 0
            val cellSize = (width_dp - lateralMarginsDP) / 8
            val heigthcell = cellSize
+
+            widthBonus = 2 * cellSize.toInt()
 
             for ((i, row) in (0..7).withIndex()) {
                 for ((j, _) in (0..7).withIndex()) {
