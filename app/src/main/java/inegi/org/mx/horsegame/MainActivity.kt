@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
+    private var cellSelected_x = 0
+    private var cellSelected_y = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // enableEdgeToEdge()
@@ -29,9 +32,16 @@ class MainActivity : AppCompatActivity() {
             x = (0..7).random()
             y = (0..7).random()
 
+            cellSelected_x = x
+            cellSelected_y = y
             selectCell(x,y)
+
         }
     private fun selectCell(x: Int, y: Int){
+              // hay que pintar el anterior de naranja
+                paintHorseCell(x,y, "previous_cell")
+                cellSelected_x = x
+                cellSelected_y = y
                 paintHorseCell(x,y, "selected_cell")
             }
 
