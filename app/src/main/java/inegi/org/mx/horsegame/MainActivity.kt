@@ -17,6 +17,10 @@ class MainActivity : AppCompatActivity() {
     private var nameColorBlack = "black_cell"
     private var nameColorWhite = "white_cell"
 
+    //control de movimientos
+    private var movesRequired = 4
+    private var moves = 64
+
     private var options = 0
 
     // hay que hacer una matriz del tablero para llevar el control de las celdas
@@ -96,8 +100,29 @@ class MainActivity : AppCompatActivity() {
             cellselectedX = x
             cellselectedY = y
             selectCell(x,y)
+     }
+    private fun paintBonusCell(x: Int, y: Int){
+        val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
+        iv.setImageResource(R.drawable.bonus)
+    }
+    private fun checkNewBonus(){
+        if (moves%movesRequired == 0 ){
+            var bonuscellX = 0
+            var bonuscellY = 0
 
+            var bonusCell = false
+            while (!bonusCell) {
+                bonuscellX = (0..7).random()
+                bonuscellY = (0..7).random()
+                if (board[bonuscellX][bonuscellY] == 0) {
+                    bonusCell = true
+                }
+            }
+            board[bonuscellX][bonuscellY] = 2
+            paintBonusCell(bonuscellX,bonuscellY)
         }
+    }
+
     private fun clearOption(x: Int, y: Int){
         val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
         if (checkColorCell(x,y) == "black"){
@@ -118,6 +143,16 @@ class MainActivity : AppCompatActivity() {
             }
     }
     private fun selectCell(x: Int, y: Int){
+        moves--
+        val tvMovesData = findViewById<TextView>(R.id.tvMovesData)
+        tvMovesData.text = moves.toString()
+        // sugerido por la IA
+        if (moves == 0){
+            val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
+            lyMessage.visibility = View.VISIBLE
+            return
+        }
+
               // hay que pintar el anterior de naranja
         board[x][y] = 1
         paintHorseCell(cellselectedX,cellselectedY, "previous_cell")
@@ -130,6 +165,12 @@ class MainActivity : AppCompatActivity() {
         paintHorseCell(x,y, "selected_cell")
 
         checkOptions(x,y)
+
+        if (moves > 0){
+            checkNewBonus()
+            //checkGameOver(x,y)
+        }
+        //else checkSuccessfulEnd()
 
         }
 
