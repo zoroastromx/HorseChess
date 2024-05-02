@@ -830,7 +830,7 @@
                             android:background="@color/white_cell"/>
                         <ImageView
                             android:id="@+id/c40"
-                            android:tag="c42"
+                            android:tag="c40"
                             android:layout_column="1"
                             android:onClick="checkCell"
                             android:layout_width="0dp"
