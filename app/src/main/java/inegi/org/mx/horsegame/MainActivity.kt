@@ -206,11 +206,42 @@ class MainActivity : AppCompatActivity() {
 
         if (moves > 0){
             checkNewBonus()
-            //checkGameOver(x,y)
+            checkGameOver(x,y)
         }
-        //else checkSuccessfulEnd()
+        else showMessage("You win","Next level", false)
+
+
+
+    }
+    private fun checkGameOver(x: Int, y: Int){
+        if (options == 0){
+            if (bonus == 0) showMessage("GAME OVER","Try again!", true)
 
         }
+    }
+    private fun showMessage(title: String, message: String, gameOver : Boolean){
+        val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
+        lyMessage.visibility = View.VISIBLE
+
+        val tvTitleMessage = findViewById<TextView>(R.id.tvTitleMessage)
+        tvTitleMessage.text = title
+
+        val tvTimeData = findViewById<TextView>(R.id.tvTimeData)
+        var score: String = ""
+        if (gameOver){
+            score = "Score: " + (levelMoves - moves) + "/" + levelMoves
+
+        }else{
+            score = tvTimeData.text.toString()
+        }
+        val tvScoreMessage = findViewById<TextView>(R.id.tvScoreMessage)
+        tvScoreMessage.text = score
+
+        val tvAction = findViewById<TextView>(R.id.tvAction)
+        tvAction.text = message
+
+    }
+
 
         private fun checkOptions(x: Int, y: Int){
             options = 0
