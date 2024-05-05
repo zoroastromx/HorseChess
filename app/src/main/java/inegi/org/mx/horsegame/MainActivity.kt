@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     // para llevar un control de los bonus conseguidos
     private var bonus = 0
 
+    private var checkMovement = true
+
     // hay que hacer una matriz del tablero para llevar el control de las celdas
 
     private lateinit var board: Array<Array<Int>>
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         val x = name.subSequence(1,2).toString().toInt()
         val y = name.subSequence(2,3).toString().toInt()
 
-        checkCell(x,y)
+        checkCellChecked(x,y)
     //selectCell(x,y)
 
 
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         board = Array(8) { Array(8) { 0 } } // esto fue una sugerencia de android studio
     }
     // para que el movimiento del caballo sea de forma correcta
-    private fun checkCell(x: Int, y: Int){
+    private fun checkCellChecked(x: Int, y: Int){
         val difX = x - cellselectedX
         val difY = y - cellselectedY
         var checkTrue = false
@@ -216,6 +218,9 @@ class MainActivity : AppCompatActivity() {
     private fun checkGameOver(x: Int, y: Int){
         if (options == 0){
             if (bonus == 0) showMessage("GAME OVER","Try again!", true)
+            else{
+                checkMovement = false
+            }
 
         }
     }
