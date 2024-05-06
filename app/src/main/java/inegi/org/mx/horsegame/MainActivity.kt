@@ -81,18 +81,34 @@ class MainActivity : AppCompatActivity() {
     }
     // para que el movimiento del caballo sea de forma correcta
     private fun checkCellChecked(x: Int, y: Int){
-        val difX = x - cellselectedX
-        val difY = y - cellselectedY
-        var checkTrue = false
+        var checkTrue = true
+        if (checkMovement) {
 
-        if (difX == 1 &&  difY == 2 )  checkTrue = true // right - top long
-        if (difX == 1 &&  difY == -2 ) checkTrue = true // right - bottom long
-        if (difX == 2 &&  difY == 1 )  checkTrue = true // right long - top
-        if (difX == 2 &&  difY == -1 ) checkTrue = true // right long - bottom
-        if (difX == -1 && difY == 2 )  checkTrue = true // left - top long
-        if (difX == -1 && difY == -2 ) checkTrue = true // left - bottom long
-        if (difX == -2 && difY == 1 )  checkTrue = true // left long - top
-        if (difX == -2 && difY == -1 ) checkTrue = true // left long - bottom
+            val difX = x - cellselectedX
+            val difY = y - cellselectedY
+            checkTrue = false
+
+            if (difX == 1 &&  difY == 2 )  checkTrue = true // right - top long
+            if (difX == 1 &&  difY == -2 ) checkTrue = true // right - bottom long
+            if (difX == 2 &&  difY == 1 )  checkTrue = true // right long - top
+            if (difX == 2 &&  difY == -1 ) checkTrue = true // right long - bottom
+            if (difX == -1 && difY == 2 )  checkTrue = true // left - top long
+            if (difX == -1 && difY == -2 ) checkTrue = true // left - bottom long
+            if (difX == -2 && difY == 1 )  checkTrue = true // left long - top
+            if (difX == -2 && difY == -1 ) checkTrue = true // left long - bottom
+
+        }
+        else{
+            if (board[x][y] != 1){
+                bonus--
+                val tvBonusData = findViewById<TextView>(R.id.tvBonusData)
+                tvBonusData.text = "+ $bonus" // para poner el bonus en la pantalla
+
+                if (bonus == 0) tvBonusData.text = ""
+            }
+        }
+
+
 
         if (board[x][y] == 1) checkTrue = false
 
@@ -203,7 +219,7 @@ class MainActivity : AppCompatActivity() {
 
 
         paintHorseCell(x,y, "selected_cell")
-
+        checkMovement = true
         checkOptions(x,y)
 
         if (moves > 0){
