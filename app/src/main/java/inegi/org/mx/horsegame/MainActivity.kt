@@ -2,6 +2,8 @@ package inegi.org.mx.horsegame
 
 import android.graphics.Point
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -10,9 +12,15 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
+
+    private var mHandler: Handler? = null
+    private var timeInSeconds: Long = 0 // para llevar el control de los segundos
+    private var gaming = true
 
     private var widthBonus = 0
 
@@ -50,18 +58,19 @@ class MainActivity : AppCompatActivity() {
         //     insets
 
         initScreenGame()
+        startGame()
         resetBoard()
         setFirstPosition() // para pintar de forma aleatoria la primera celda
     }
 
     // función pública que se llama desde el botón
-    fun checkCell(v: View){
+    fun checkCell(v: View) {
         val name = v.tag.toString()
-        val x = name.subSequence(1,2).toString().toInt()
-        val y = name.subSequence(2,3).toString().toInt()
+        val x = name.subSequence(1, 2).toString().toInt()
+        val y = name.subSequence(2, 3).toString().toInt()
 
-        checkCellChecked(x,y)
-    //selectCell(x,y)
+        checkCellChecked(x, y)
+        //selectCell(x,y)
 
 
         //val x = v.tag.toString().substring(1,2).toInt()
@@ -77,11 +86,12 @@ class MainActivity : AppCompatActivity() {
     // valor 1 hay caballo
     // valor 2 es un bonus
     // valor 9 es una opción del movimiento actualk
-    private fun resetBoard(){
+    private fun resetBoard() {
         board = Array(8) { Array(8) { 0 } } // esto fue una sugerencia de android studio
     }
+
     // para que el movimiento del caballo sea de forma correcta
-    private fun checkCellChecked(x: Int, y: Int){
+    private fun checkCellChecked(x: Int, y: Int) {
         var checkTrue = true
         if (checkMovement) {
 
@@ -89,18 +99,17 @@ class MainActivity : AppCompatActivity() {
             val difY = y - cellselectedY
             checkTrue = false
 
-            if (difX == 1 &&  difY == 2 )  checkTrue = true // right - top long
-            if (difX == 1 &&  difY == -2 ) checkTrue = true // right - bottom long
-            if (difX == 2 &&  difY == 1 )  checkTrue = true // right long - top
-            if (difX == 2 &&  difY == -1 ) checkTrue = true // right long - bottom
-            if (difX == -1 && difY == 2 )  checkTrue = true // left - top long
-            if (difX == -1 && difY == -2 ) checkTrue = true // left - bottom long
-            if (difX == -2 && difY == 1 )  checkTrue = true // left long - top
-            if (difX == -2 && difY == -1 ) checkTrue = true // left long - bottom
+            if (difX == 1 && difY == 2) checkTrue = true // right - top long
+            if (difX == 1 && difY == -2) checkTrue = true // right - bottom long
+            if (difX == 2 && difY == 1) checkTrue = true // right long - top
+            if (difX == 2 && difY == -1) checkTrue = true // right long - bottom
+            if (difX == -1 && difY == 2) checkTrue = true // left - top long
+            if (difX == -1 && difY == -2) checkTrue = true // left - bottom long
+            if (difX == -2 && difY == 1) checkTrue = true // left long - top
+            if (difX == -2 && difY == -1) checkTrue = true // left long - bottom
 
-        }
-        else{
-            if (board[x][y] != 1){
+        } else {
+            if (board[x][y] != 1) {
                 bonus--
                 val tvBonusData = findViewById<TextView>(R.id.tvBonusData)
                 tvBonusData.text = "+ $bonus" // para poner el bonus en la pantalla
@@ -113,28 +122,30 @@ class MainActivity : AppCompatActivity() {
 
         if (board[x][y] == 1) checkTrue = false
 
-        if (checkTrue){
-            selectCell(x,y)
+        if (checkTrue) {
+            selectCell(x, y)
         }
 
     }
 
-     private fun setFirstPosition(){
-            var x = 0
-            var y = 0
-            x = (0..7).random()
-            y = (0..7).random()
+    private fun setFirstPosition() {
+        var x = 0
+        var y = 0
+        x = (0..7).random()
+        y = (0..7).random()
 
-            cellselectedX = x
-            cellselectedY = y
-            selectCell(x,y)
-     }
-    private fun paintBonusCell(x: Int, y: Int){
+        cellselectedX = x
+        cellselectedY = y
+        selectCell(x, y)
+    }
+
+    private fun paintBonusCell(x: Int, y: Int) {
         val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
         iv.setImageResource(R.drawable.bonus)
     }
-    private fun checkNewBonus(){
-        if (moves%movesRequired == 0 ){
+
+    private fun checkNewBonus() {
+        if (moves % movesRequired == 0) {
             var bonuscellX = 0
             var bonuscellY = 0
 
@@ -147,55 +158,79 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             board[bonuscellX][bonuscellY] = 2
-            paintBonusCell(bonuscellX,bonuscellY)
+            paintBonusCell(bonuscellX, bonuscellY)
         }
     }
 
-    private fun clearOption(x: Int, y: Int){
+    private fun clearOption(x: Int, y: Int) {
         val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
-        if (checkColorCell(x,y) == "black"){
-            iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(nameColorBlack, "color", packageName)))
-        }else{
-            iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(nameColorWhite, "color", packageName)))
+        if (checkColorCell(x, y) == "black") {
+            iv.setBackgroundColor(
+                ContextCompat.getColor(
+                    this,
+                    resources.getIdentifier(nameColorBlack, "color", packageName)
+                )
+            )
+        } else {
+            iv.setBackgroundColor(
+                ContextCompat.getColor(
+                    this,
+                    resources.getIdentifier(nameColorWhite, "color", packageName)
+                )
+            )
         }
-        if (board[x][y] == 1) iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier("previous cell", "color", packageName)))
+        if (board[x][y] == 1) iv.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                resources.getIdentifier("previous cell", "color", packageName)
+            )
+        )
     }
-    private fun clearOptions(){
+
+    private fun clearOptions() {
         for (i in 0..7)
-            for (j in 0..7){
-                if ((board[i][j] == 9) || board[i][j] == 2){
+            for (j in 0..7) {
+                if ((board[i][j] == 9) || board[i][j] == 2) {
                     if (board[i][j] == 9) board[i][j] = 0
-                    clearOption(i,j)
+                    clearOption(i, j)
 
                 }
             }
     }
 
-    private fun growProgressBonus(){
+    private fun growProgressBonus() {
 
         val movesDone = levelMoves - moves
         val bonusDone = movesDone / movesRequired
         val movesRest = movesRequired * (bonusDone)
-        val bonusGrow = movesDone -  movesRest
+        val bonusGrow = movesDone - movesRest
 
         val v = findViewById<View>(R.id.vNewBonus)
-        val widthBonus = ((widthBonus/movesRequired) * bonusGrow).toFloat()
+        val widthBonus = ((widthBonus / movesRequired) * bonusGrow).toFloat()
         // pintar la barrita de progreso roja
-        val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, getResources().getDisplayMetrics()).toInt()
-        val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,widthBonus, getResources().getDisplayMetrics()).toInt()
+        val height = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            8f,
+            getResources().getDisplayMetrics()
+        ).toInt()
+        val width = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            widthBonus,
+            getResources().getDisplayMetrics()
+        ).toInt()
         //val v = findViewById<View>(R.id.vNewBonus)
         v.setLayoutParams(TableRow.LayoutParams(width, height))
 
     }
 
-    private fun selectCell(x: Int, y: Int){
+    private fun selectCell(x: Int, y: Int) {
         moves--
         val tvMovesData = findViewById<TextView>(R.id.tvMovesData)
         tvMovesData.text = moves.toString()
 
         growProgressBonus()
 
-        if (board[x][y] == 2){
+        if (board[x][y] == 2) {
             bonus++
             // sugerido por la IA
 
@@ -204,55 +239,55 @@ class MainActivity : AppCompatActivity() {
         }
 
         // sugerido por la IA
-        if (moves == 0){
+        if (moves == 0) {
             val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
             lyMessage.visibility = View.VISIBLE
             return
         }
 
-              // hay que pintar el anterior de naranja
+        // hay que pintar el anterior de naranja
         board[x][y] = 1
-        paintHorseCell(cellselectedX,cellselectedY, "previous_cell")
+        paintHorseCell(cellselectedX, cellselectedY, "previous_cell")
         cellselectedX = x
         cellselectedY = y
 
         clearOptions()
 
 
-        paintHorseCell(x,y, "selected_cell")
+        paintHorseCell(x, y, "selected_cell")
         checkMovement = true
-        checkOptions(x,y)
+        checkOptions(x, y)
 
-        if (moves > 0){
+        if (moves > 0) {
             checkNewBonus()
             checkGameOver()
-        }
-        else showMessage("You win","Next level", false)
-
+        } else showMessage("You win", "Next level", false)
 
 
     }
-    private fun checkGameOver(){
-        if (options == 0){
-            if (bonus > 0){
+
+    private fun checkGameOver() {
+        if (options == 0) {
+            if (bonus > 0) {
                 checkMovement = false
                 paintAllOptions()
             }
             //if (bonus == 0) showMessage("GAME OVER","Try again!", true)
-            else showMessage("GAME OVER","Try again!", true)
+            else showMessage("GAME OVER", "Try again!", true)
             //{
-             //   checkMovement = false
+            //   checkMovement = false
 //                paintAllOptions()
-  //          }
+            //          }
 
         }
     }
-    private fun paintAllOptions(){
-        for (i in 0..7){
-            for (j in 0..7){
-                if (board[i][j] != 1){ // si no es un caballo, es una opción
-                    paintOptions(i,j)
-                    if (board[i][j] == 0){
+
+    private fun paintAllOptions() {
+        for (i in 0..7) {
+            for (j in 0..7) {
+                if (board[i][j] != 1) { // si no es un caballo, es una opción
+                    paintOptions(i, j)
+                    if (board[i][j] == 0) {
                         board[i][j] = 9
                     }
                 }
@@ -260,7 +295,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMessage(title: String, message: String, gameOver : Boolean){
+    private fun showMessage(title: String, message: String, gameOver: Boolean) {
+        gaming = false
         val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
         lyMessage.visibility = View.VISIBLE
 
@@ -269,10 +305,10 @@ class MainActivity : AppCompatActivity() {
 
         val tvTimeData = findViewById<TextView>(R.id.tvTimeData)
         var score: String = ""
-        if (gameOver){
+        if (gameOver) {
             score = "Score: " + (levelMoves - moves) + "/" + levelMoves
 
-        }else{
+        } else {
             score = tvTimeData.text.toString()
         }
         val tvScoreMessage = findViewById<TextView>(R.id.tvScoreMessage)
@@ -284,122 +320,221 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-        private fun checkOptions(x: Int, y: Int){
-            options = 0
+    private fun checkOptions(x: Int, y: Int) {
+        options = 0
 
-            checkMove(x,y,1,2)
-            checkMove(x,y,2,1)
-            checkMove(x,y,1,-2)
-            checkMove(x,y,2,-1)
-            checkMove(x,y,-1,2)
-            checkMove(x,y,-2,1)
-            checkMove(x,y,-1,-2)
-            checkMove(x,y,-2,-1)
+        checkMove(x, y, 1, 2)
+        checkMove(x, y, 2, 1)
+        checkMove(x, y, 1, -2)
+        checkMove(x, y, 2, -1)
+        checkMove(x, y, -1, 2)
+        checkMove(x, y, -2, 1)
+        checkMove(x, y, -1, -2)
+        checkMove(x, y, -2, -1)
 
-            val tvOptionsData = findViewById<TextView>(R.id.tvOptionsData)
-            tvOptionsData.text = options.toString()
+        val tvOptionsData = findViewById<TextView>(R.id.tvOptionsData)
+        tvOptionsData.text = options.toString()
 
 
-        }
-        // dar al usuario las opciones de movimiento, sugerencias pues
-        private fun checkMove(x: Int, y: Int, movX: Int, movY: Int){
-            val optionX = x + movX
-            val optionY = y + movY
+    }
 
-            if (optionX < 8 && optionY < 8 && optionX >= 0 && optionY >= 0){
-                if (board[optionX][optionY] == 0
-                    || board[optionX][optionY] == 2){
-                    //paintHorseCell(optionX,optionY, "option_cell") lo que me dice la IA
-                    options++
-                    paintOptions(optionX, optionY)
+    // dar al usuario las opciones de movimiento, sugerencias pues
+    private fun checkMove(x: Int, y: Int, movX: Int, movY: Int) {
+        val optionX = x + movX
+        val optionY = y + movY
 
-                    if (board[optionX][optionY] == 0) {
-                        board[optionX][optionY] = 9
-                    }
+        if (optionX < 8 && optionY < 8 && optionX >= 0 && optionY >= 0) {
+            if (board[optionX][optionY] == 0
+                || board[optionX][optionY] == 2
+            ) {
+                //paintHorseCell(optionX,optionY, "option_cell") lo que me dice la IA
+                options++
+                paintOptions(optionX, optionY)
+
+                if (board[optionX][optionY] == 0) {
+                    board[optionX][optionY] = 9
                 }
             }
         }
-        private fun checkColorCell(x: Int, y: Int): String{
-            var color = ""
-            val blackColumnX = arrayOf(0,2,4,6)
-            val blackRowX = arrayOf(1,3,5,7)
-            color = if ((blackColumnX.contains(x) && blackColumnX.contains(y))
-                || (blackRowX.contains(x) && blackRowX.contains(y))){
-                "black"
-            }else{
-                "white"
+    }
+
+    private fun checkColorCell(x: Int, y: Int): String {
+        var color = ""
+        val blackColumnX = arrayOf(0, 2, 4, 6)
+        val blackRowX = arrayOf(1, 3, 5, 7)
+        color = if ((blackColumnX.contains(x) && blackColumnX.contains(y))
+            || (blackRowX.contains(x) && blackRowX.contains(y))
+        ) {
+            "black"
+        } else {
+            "white"
+        }
+
+        return color
+    }
+
+    private fun paintOptions(x: Int, y: Int) {
+        val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
+        // iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(color, "color", packageName)))
+        // si la casilla es blanca se le pone un fondo y si es negra otro fondo
+        if (checkColorCell(x, y) == "black") {
+            iv.setBackgroundResource(R.drawable.option_black)
+            //iv.setImageResource(R.drawable.horse) // IA
+        } else {
+            iv.setBackgroundResource(R.drawable.option_white)
+            // iv.setImageResource(R.drawable.horse) // IA
+        }
+
+    }
+
+    private fun paintHorseCell(x: Int, y: Int, color: String) {
+        //val iv = findViewById<ImageView>(resources.getIdentifier("c$x$y", "id", packageName))
+        val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
+        //iv.setTag(tag)
+        iv.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                resources.getIdentifier(color, "color", packageName)
+            )
+        )
+        iv.setImageResource(R.drawable.horse)
+
+
+    }
+
+    private fun initScreenGame() {
+        setSizeBord()
+        hideMessage()
+    }
+
+    //se cambian los tamaños de los cuadros del tablero en base a la resolución de la pantalla
+    private fun setSizeBord() {
+        var iv: ImageView
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        val width = size.x
+
+        val width_dp = (width / getResources().getDisplayMetrics().density)
+
+        val lateralMarginsDP = 0
+        val cellSize = (width_dp - lateralMarginsDP) / 8
+        val heigthcell = cellSize
+
+        widthBonus = 2 * cellSize.toInt()
+
+        for ((i, row) in (0..7).withIndex()) {
+            for ((j, _) in (0..7).withIndex()) {
+                iv = findViewById(resources.getIdentifier("c$i$j", "id", packageName))
+                //
+                val height = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    heigthcell,
+                    getResources().getDisplayMetrics()
+                ).toInt()
+                val width = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    cellSize,
+                    getResources().getDisplayMetrics()
+                ).toInt()
+                iv.setLayoutParams(TableRow.LayoutParams(width, height))
+
+
             }
-
-            return color
         }
-
-        private fun paintOptions(x: Int, y: Int){
-            val iv: ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
-           // iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(color, "color", packageName)))
-            // si la casilla es blanca se le pone un fondo y si es negra otro fondo
-            if (checkColorCell(x,y) == "black"){
-                iv.setBackgroundResource(R.drawable.option_black)
-                //iv.setImageResource(R.drawable.horse) // IA
-            }else{
-                iv.setBackgroundResource(R.drawable.option_white)
-               // iv.setImageResource(R.drawable.horse) // IA
-            }
-
-        }
-
-        private fun paintHorseCell(x: Int, y: Int, color: String){
-            //val iv = findViewById<ImageView>(resources.getIdentifier("c$x$y", "id", packageName))
-            val iv : ImageView = findViewById(resources.getIdentifier("c$x$y", "id", packageName))
-            //iv.setTag(tag)
-            iv.setBackgroundColor(ContextCompat.getColor(this, resources.getIdentifier(color, "color", packageName)))
-            iv.setImageResource(R.drawable.horse)
-
-
-        }
-
-        private fun initScreenGame(){
-            setSizeBord()
-            hideMessage()
-        }
-        //se cambian los tamaños de los cuadros del tablero en base a la resolución de la pantalla
-        private fun setSizeBord(){
-           var iv : ImageView
-           val display = windowManager.defaultDisplay
-           val size = Point()
-           display.getSize(size)
-           val width = size.x
-
-           val width_dp = (width / getResources().getDisplayMetrics().density)
-
-           val lateralMarginsDP = 0
-           val cellSize = (width_dp - lateralMarginsDP) / 8
-           val heigthcell = cellSize
-
-            widthBonus = 2 * cellSize.toInt()
-
-            for ((i, row) in (0..7).withIndex()) {
-                for ((j, _) in (0..7).withIndex()) {
-                    iv = findViewById(resources.getIdentifier("c$i$j", "id", packageName))
-                    //
-                    val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,heigthcell,getResources().getDisplayMetrics()).toInt()
-                    val width  = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,cellSize,getResources().getDisplayMetrics()).toInt()
-                    iv.setLayoutParams(TableRow.LayoutParams(width, height))
-
-
-                }
-            }
-          /* for (i in 0..7)
+        /* for (i in 0..7)
                for (j in 0..7){
                    iv = findViewById(resources.getIdentifier("c$i$j", "id", packageName))
                    //iv = findViewById(R.id."c$i$j")
                    val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,heigthcell,getResources().getDisplayMetrics()).toInt()
                    val width  = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,cellSize,getResources().getDisplayMetrics()).toInt()
                    iv.setLayoutParams(TableRow.LayoutParams(width, height))*/
-               //}
+        //}
+    }
+
+    private fun hideMessage() {
+        val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
+        lyMessage.visibility = View.INVISIBLE
+    }
+
+    private var chronometer: Runnable = object : Runnable {
+        override fun run() {
+            try {
+                if (gaming){ // si es que se sigue jugando
+                    timeInSeconds++
+                    updateStopWatchView(timeInSeconds)
+               }
+            } finally {
+                mHandler!!.postDelayed(this, 1000L)
+            }
         }
-        private fun hideMessage(){
-            val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
-            lyMessage.visibility = View.INVISIBLE
+    }
+
+    private fun updateStopWatchView(timeInSeconds: Long) {
+        val formattedTime = getFormattedStopWatch((timeInSeconds * 1000))
+        val tvTimeData = findViewById<TextView>(R.id.tvTimeData)
+        tvTimeData.text = formattedTime
+    }
+
+    private fun getFormattedStopWatch(ms: Long): String {
+        var milliseconds = ms
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds)
+        milliseconds -= TimeUnit.MINUTES.toMillis(minutes)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds)
+
+        return "${if (minutes > 10) "0" else ""}$minutes:" +
+                "${if (seconds < 10) "0" else ""}$seconds"
+    }
+
+
+    private fun startGame() {
+        gaming = true
+
+        resetBoard()
+        clearBoard()
+        setFirstPosition()
+
+        resetTime()
+        startTime()
+    }
+
+    private fun clearBoard() {
+        var iv: ImageView
+
+        var colorBlack = ContextCompat.getColor(
+            this,
+            resources.getIdentifier(nameColorBlack, "color", packageName)
+        )
+        var colorWhite = ContextCompat.getColor(
+            this,
+            resources.getIdentifier(nameColorWhite, "color", packageName)
+        )
+
+        for (i in 0..7) {
+            for (j in 0..7) {
+                iv = findViewById(resources.getIdentifier("c$i$j", "id", packageName))
+                //iv.setImageResource(R.drawable.horse)
+                iv.setImageResource(0)
+
+                if (checkColorCell(i, j) == "black") iv.setBackgroundColor(colorBlack)
+                else iv.setBackgroundColor(colorWhite)
+            }
         }
+    }
+
+    // crear funcion para controlar el tiempo
+    private fun resetTime() {
+        mHandler?.removeCallbacks(chronometer)
+        timeInSeconds = 0
+
+        var tvTimeData = findViewById<TextView>(R.id.tvTimeData)
+        tvTimeData.text = "00:00"
+    }
+
+    private fun startTime() {
+        mHandler = Handler(Looper.getMainLooper())
+        chronometer.run()
+
+    }
 
 }
