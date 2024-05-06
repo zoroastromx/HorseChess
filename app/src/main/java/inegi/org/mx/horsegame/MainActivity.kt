@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         setFirstPosition() // para pintar de forma aleatoria la primera celda
     }
 
+    // función pública que se llama desde el botón
     fun checkCell(v: View){
         val name = v.tag.toString()
         val x = name.subSequence(1,2).toString().toInt()
@@ -224,22 +225,41 @@ class MainActivity : AppCompatActivity() {
 
         if (moves > 0){
             checkNewBonus()
-            checkGameOver(x,y)
+            checkGameOver()
         }
         else showMessage("You win","Next level", false)
 
 
 
     }
-    private fun checkGameOver(x: Int, y: Int){
+    private fun checkGameOver(){
         if (options == 0){
-            if (bonus == 0) showMessage("GAME OVER","Try again!", true)
-            else{
+            if (bonus > 0){
                 checkMovement = false
+                paintAllOptions()
             }
+            //if (bonus == 0) showMessage("GAME OVER","Try again!", true)
+            else showMessage("GAME OVER","Try again!", true)
+            //{
+             //   checkMovement = false
+//                paintAllOptions()
+  //          }
 
         }
     }
+    private fun paintAllOptions(){
+        for (i in 0..7){
+            for (j in 0..7){
+                if (board[i][j] != 1){ // si no es un caballo, es una opción
+                    paintOptions(i,j)
+                    if (board[i][j] == 0){
+                        board[i][j] = 9
+                    }
+                }
+            }
+        }
+    }
+
     private fun showMessage(title: String, message: String, gameOver : Boolean){
         val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
         lyMessage.visibility = View.VISIBLE
