@@ -1,5 +1,7 @@
 package inegi.org.mx.horsegame
 
+import android.accessibilityservice.AccessibilityService.ScreenshotResult
+import android.graphics.Bitmap
 import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
@@ -11,12 +13,14 @@ import android.widget.LinearLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
+    private var bitmap: Bitmap?= null
 
     private var mHandler: Handler? = null
     private var timeInSeconds: Long = 0 // para llevar el control de los segundos
@@ -538,4 +542,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // función pública para el click del sharegame
+    fun launchShareGame(v: View){
+        shareGame()
+    }
+
+    private fun shareGame(){
+        // en caso de no haber habilitado los permisos, se vuelve a preguntar
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+
+        val ssc: ScreenCapture = capture(this)
+        bitmap = ssc
+
+    }
 }
