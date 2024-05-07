@@ -936,6 +936,7 @@
                       android:layout_marginRight="24dp"
                       android:layout_marginBottom="40dp"
                       android:background="@drawable/bg_title_bottom"
+                      android:onClick="launchShareGame"
                       android:visibility="visible"
                       android:src="@drawable/ic_share"
 
