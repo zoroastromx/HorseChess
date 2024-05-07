@@ -59,8 +59,8 @@ class MainActivity : AppCompatActivity() {
 
         initScreenGame()
         startGame()
-        resetBoard()
-        setFirstPosition() // para pintar de forma aleatoria la primera celda
+       // resetBoard()
+       // setFirstPosition() // para pintar de forma aleatoria la primera celda
     }
 
     // función pública que se llama desde el botón
@@ -457,6 +457,7 @@ class MainActivity : AppCompatActivity() {
         lyMessage.visibility = View.INVISIBLE
     }
 
+    // este siempre está ejecutándose, hasta que se ejecuta el mHandler?.removeCallbacks(chronometer)
     private var chronometer: Runnable = object : Runnable {
         override fun run() {
             try {
