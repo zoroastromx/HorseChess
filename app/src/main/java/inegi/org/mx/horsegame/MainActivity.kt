@@ -587,6 +587,7 @@ class MainActivity : AppCompatActivity() {
     private fun setLevel() {
         if (nextLevel) {
             level++
+            setLives()
         } else {
             lives--
             if (lives < 1) {
@@ -596,6 +597,24 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    private fun setLives(){
+        when (level) {
+            1 -> lives = 1
+            2 -> lives = 4
+            3 -> lives = 3
+            4 -> lives = 3
+            5 -> lives = 4
+            6 -> lives = 3
+            7 -> lives = 5
+            8 -> lives = 3
+            9 -> lives = 4
+            10 -> lives = 5
+            11 -> lives = 5
+            12 -> lives = 3
+            13 -> lives = 4
+        }
+    }
+
 
     private fun setBoardLevel() {
 
