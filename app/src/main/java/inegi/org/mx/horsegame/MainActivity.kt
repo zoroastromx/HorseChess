@@ -1,6 +1,5 @@
 package inegi.org.mx.horsegame
 
-import android.accessibilityservice.AccessibilityService.ScreenshotResult
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.os.Bundle
@@ -15,12 +14,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    private var bitmap: Bitmap?= null
+    private var bitmap: Bitmap? = null
 
     private var mHandler: Handler? = null
     private var timeInSeconds: Long = 0 // para llevar el control de los segundos
@@ -33,14 +31,18 @@ class MainActivity : AppCompatActivity() {
     private var nameColorBlack = "black_cell"
     private var nameColorWhite = "white_cell"
 
-    private var levelMoves = 64 // para saber cuantos movimientos tiene cada nivel
-
+    private var nextLevel = false
+    private var level = 1
+    private var levelMoves = 0 // para saber cuantos movimientos tiene cada nivel
     //control de movimientos
-    private var movesRequired = 4
-    private var moves = 64
+    private var movesRequired = 0
+    private var moves = 0
+    private var lives = 1 // vidas que tiene el usuario
+
+    private var scoreLives = 1
+    private var scoreLevel = 1
 
     private var options = 0
-
     // para llevar un control de los bonus conseguidos
     private var bonus = 0
 
@@ -63,8 +65,8 @@ class MainActivity : AppCompatActivity() {
 
         initScreenGame()
         startGame()
-       // resetBoard()
-       // setFirstPosition() // para pintar de forma aleatoria la primera celda
+        // resetBoard()
+        // setFirstPosition() // para pintar de forma aleatoria la primera celda
     }
 
     // función pública que se llama desde el botón
@@ -408,7 +410,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initScreenGame() {
         setSizeBord()
-        hideMessage()
+        hideMessage(false)
     }
 
     //se cambian los tamaños de los cuadros del tablero en base a la resolución de la pantalla
@@ -456,19 +458,21 @@ class MainActivity : AppCompatActivity() {
         //}
     }
 
-    private fun hideMessage() {
+    private fun hideMessage(star : Boolean) {
         val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
         lyMessage.visibility = View.INVISIBLE
+        if (star) startGame()
+
     }
 
     // este siempre está ejecutándose, hasta que se ejecuta el mHandler?.removeCallbacks(chronometer)
     private var chronometer: Runnable = object : Runnable {
         override fun run() {
             try {
-                if (gaming){ // si es que se sigue jugando
+                if (gaming) { // si es que se sigue jugando
                     timeInSeconds++
                     updateStopWatchView(timeInSeconds)
-               }
+                }
             } finally {
                 mHandler!!.postDelayed(this, 1000L)
             }
@@ -493,15 +497,196 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun startGame() {
-        gaming = true
+
+        setLevel()
+        setLevelParameters()
 
         resetBoard()
         clearBoard()
+
+        setBoardLevel()
+
         setFirstPosition()
 
         resetTime()
         startTime()
+        gaming = true
     }
+    private fun setLevelParameters(){
+        val tvLivesData = findViewById<TextView>(R.id.tvLiveData)
+        tvLivesData.text = lives.toString()
+
+        scoreLives = lives
+
+        val tvlevelNumber = findViewById<TextView>(R.id.tvLevelNumber)
+        tvlevelNumber.text = level.toString()
+
+        scoreLevel = level
+
+        bonus = 0
+        val tvBonusData = findViewById<TextView>(R.id.tvBonusData)
+        tvBonusData.text = ""
+
+        setlevelMoves()
+        moves = levelMoves
+
+        movesRequired = setMovesRequired()
+    }
+
+    private fun setlevelMoves(){
+        when (level) {
+            1 -> levelMoves = 64
+            2 -> levelMoves = 56
+            3 -> levelMoves = 32
+            4 -> levelMoves = 16
+            5 -> levelMoves = 48
+            6 -> levelMoves = 36
+            7 -> levelMoves = 48
+            8 -> levelMoves = 49
+            9 -> levelMoves = 59
+            10 -> levelMoves = 48
+            11 -> levelMoves = 64
+            12 -> levelMoves = 48
+            13 -> levelMoves = 48
+        }
+    }
+    private fun setMovesRequired():Int {
+        var movesRequired = 0
+        when (level) {
+            1 -> movesRequired = 8
+            2 -> movesRequired = 10
+            3 -> movesRequired = 12
+            4 -> movesRequired = 10
+            5 -> movesRequired = 10
+            6 -> movesRequired = 12
+            7 -> movesRequired = 5
+            8 -> movesRequired = 7
+            9 -> movesRequired = 9
+            10 -> movesRequired = 8
+            11 -> movesRequired = 1000
+            12 -> movesRequired = 5
+            13 -> movesRequired = 5
+        }
+        return movesRequired
+    }
+
+    private fun setLevel() {
+        if (nextLevel) {
+            level++
+        } else {
+            lives--
+            if (lives < 1) {
+                level = 1
+                lives = 1
+            }
+        }
+
+    }
+
+    private fun setBoardLevel() {
+
+      when (level) {
+          2 -> paintLevel2()
+          3 -> paintLevel3()
+          4 -> paintLevel4()
+          5 -> paintLevel5()
+          6 -> paintLevel6()
+          7 -> paintLevel7()
+          8 -> paintLevel8()
+          9 -> paintLevel9()
+          10 -> paintLevel10()
+          11 -> paintLevel11()
+          12 -> paintLevel12()
+          13 -> paintLevel13()
+      }
+    }
+
+    private fun paintColumn(column: Int) {
+        for (i in 0..7) {
+            board[column][i] = 1
+            paintHorseCell(column, i, "previous_cell")
+        }
+    }
+    private fun paintRow(row: Int) {
+
+    }
+    private fun paintDiagonal(diagonal: Int) {
+
+    }
+     private fun paintDiagonalInverse(diagonal: Int) {
+
+     }
+
+    private fun paintLevel2() {
+        paintColumn(6)
+    }
+
+    private fun paintLevel3(){
+        for (i in 0..7){
+            for (j in 4..7){
+                board[i][j] = 1
+                paintHorseCell(j,i,"previous_cell")
+            }
+        }
+    }
+
+    private fun paintLevel4(){
+        paintLevel3(); paintLevel5()
+    }
+
+    private fun paintLevel5() {
+        for (i in 0..3) {
+            for (j in 0..3) {
+                board[i][j] = 1
+                paintHorseCell(j, i, "previous_cell")
+            }
+        }
+    }
+    private fun paintLevel6() {
+        for (i in 4..7) {
+            for (j in 0..3) {
+                board[i][j] = 1
+                paintHorseCell(j, i, "previous_cell")
+            }
+        }
+    }
+    private fun paintLevel7(){
+        paintLevel2()
+    }
+
+    private fun paintLevel8(){
+        paintLevel3()
+        paintLevel4()
+    }
+
+    private fun paintLevel9(){
+        paintLevel5()
+        paintLevel6()
+    }
+
+    private fun paintLevel10() {
+        paintLevel7()
+        paintLevel8()
+    }
+
+    private fun paintLevel11() {
+        paintLevel9()
+        paintLevel10()
+    }
+
+    private fun paintLevel12() {
+        paintLevel11()
+        paintLevel13()
+    }
+
+    private fun paintLevel13() {
+        paintLevel12()
+        paintLevel2()
+    }
+
+
+
+
 
     private fun clearBoard() {
         var iv: ImageView
@@ -542,18 +727,31 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun launchAction(v: View) {
+        hideMessage(true)
+
+    }
+
     // función pública para el click del sharegame
-    fun launchShareGame(v: View){
+    fun launchShareGame(v: View) {
         shareGame()
     }
 
-    private fun shareGame(){
+    private fun shareGame() {
         // en caso de no haber habilitado los permisos, se vuelve a preguntar
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            1
+        )
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+            1
+        )
 
-        val ssc: ScreenCapture = capture(this)
-        bitmap = ssc
+        //val ssc: ScreenCapture = capture(this)
+        //bitmap = ssc
 
     }
 }
