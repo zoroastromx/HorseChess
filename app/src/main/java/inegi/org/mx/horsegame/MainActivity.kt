@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.MobileAds
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -64,9 +65,16 @@ class MainActivity : AppCompatActivity() {
         //     insets
 
         initScreenGame()
+
+        initAds()
+
         startGame()
         // resetBoard()
         // setFirstPosition() // para pintar de forma aleatoria la primera celda
+    }
+
+    private fun initAds(){
+        MobileAds.initialize(this){}
     }
 
     // función pública que se llama desde el botón
@@ -787,4 +795,6 @@ class MainActivity : AppCompatActivity() {
         //bitmap = ssc
 
     }
+
+
 }
