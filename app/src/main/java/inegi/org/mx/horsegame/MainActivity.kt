@@ -137,9 +137,19 @@ class MainActivity : AppCompatActivity() {
     private fun setFirstPosition() {
         var x = 0
         var y = 0
-        x = (0..7).random()
-        y = (0..7).random()
 
+        var firstPosition = false
+
+        while(!firstPosition){
+
+            x = (0..7).random()
+            y = (0..7).random()
+
+            if (board[x][y] == 0) firstPosition = true
+            checkOptions(x,y)
+            if (options == 0) firstPosition = false
+
+        }
         cellselectedX = x
         cellselectedY = y
         selectCell(x, y)
@@ -303,6 +313,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMessage(title: String, message: String, gameOver: Boolean) {
         gaming = false
+        nextLevel = !gameOver
+
+
+
         val lyMessage = findViewById<LinearLayout>(R.id.lyMessage)
         lyMessage.visibility = View.VISIBLE
 
